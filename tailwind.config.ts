@@ -20,6 +20,9 @@ const config = {
       },
     },
     extend: {
+      backgroundImage: {
+        hero: "url('/hero-image.png')",
+      },
       sans: ["var(--font-sans)", ...fontFamily.sans],
       colors: {
         border: "hsl(var(--border))",
