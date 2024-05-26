@@ -8,7 +8,7 @@ const Hero = () => {
   return (
     <div className='py-48 sm:py-0'>
         <div className="flex items-center justify-between sm:py-48 sm:bg-hero bg-cover bg-no-repeat bg-center">
-            <div className="mx-auto max-w-2-xl text-center lg:text-left lg:ml-5">
+            <div className="mx-auto max-w-2-xl text-center lg:text-left px-5">
                 <h1 className='text-4xl font-bold tracking-tight text-gray-600 sm:text-6xl'>
                     Unlock Extra Income, Rent Your Unused Items Today! 
                 </h1>
