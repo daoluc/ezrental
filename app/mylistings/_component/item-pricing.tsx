@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { useMyListingStore } from '../my-listing-store'
 
 const FormSchema = z.object({
     hourly: z.coerce
@@ -27,15 +28,21 @@ function ItemPricing({
     onNext: () => void,
     onPrev: () => void,
 }) {
+    const myListing = useMyListingStore()
+
     const form = useForm<ItemPricingInput>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            hourly: 0,
-            daily: 0,
+            hourly: myListing.data.price?.hourly,
+            daily: myListing.data.price?.daily,
         }
     })
 
     function onSubmit(data: ItemPricingInput) {
+        myListing.updateState({ price: {
+            hourly: data.hourly,
+            daily: data.daily
+        }})
         onNext()
     }
 

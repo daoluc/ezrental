@@ -3,7 +3,7 @@
 import * as z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form, FormControl, FormDescription, FormField, FormItem } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import {
     Select,
     SelectContent,
@@ -12,6 +12,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Button } from '@/components/ui/button'
+import { useMyListingStore } from '../my-listing-store'
 
 
 export const itemcategory = [
@@ -43,14 +44,18 @@ function ItemCategory({
     onNext: () => void,
     onPrev: () => void,
 }) {
+
+    const myListing = useMyListingStore()
+
     const form = useForm<ItemCategoryInput>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            itemcategory: '',
+            itemcategory: myListing.data.category,
         }
     })
 
     function onSubmit(data: ItemCategoryInput) {
+        myListing.updateState({ category: data.itemcategory })
         onNext()
     }
 
@@ -64,7 +69,9 @@ function ItemCategory({
                         name='itemcategory'
                         render={({ field }) => (
                             <FormItem>
-                                <Select onValueChange={field.onChange}>
+                                <Select onValueChange={field.onChange}
+                                defaultValue={myListing.data.category}
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="select an item category">{field.value}</SelectValue>
                                     </SelectTrigger>
@@ -76,6 +83,7 @@ function ItemCategory({
                                         }
                                     </SelectContent>
                                 </Select>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />

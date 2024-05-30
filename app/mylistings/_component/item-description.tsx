@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from '@/components/ui/button'
+import { useMyListingStore } from '../my-listing-store'
 
 const FormSchema = z.object({
     itemdescription: z.string().min(4, {
@@ -22,14 +23,17 @@ function ItemDescription({
     onNext: () => void,
     onPrev: () => void,
 }) {
+    const myListing = useMyListingStore()
+
     const form = useForm<ItemDescriptionInput>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            itemdescription: '',
+            itemdescription: myListing.data.description,
         }
     })
 
     function onSubmit(data: ItemDescriptionInput) {
+        myListing.updateState({ description: data.itemdescription })
         onNext()
     }
 

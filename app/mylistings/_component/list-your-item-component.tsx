@@ -8,10 +8,14 @@ import ItemDescription from './item-description'
 import ItemPricing from './item-pricing'
 import ItemPhotos from './item-photos'
 import { Button } from '@/components/ui/button'
+import { useMyListingStore } from '../my-listing-store'
+import { useSession } from 'next-auth/react'
 
 const totalSteps = 5
 const stepIncrement = 100 / totalSteps
 const ListYourItemComponent = () => {
+    const {data:session} = useSession()
+    const myListing = useMyListingStore()
     const [step, setStep] = React.useState(1)
     const handleNextStepChange = () => {
         if (step === totalSteps) return
@@ -23,7 +27,8 @@ const ListYourItemComponent = () => {
     }
 
     const handleFinalSubmit = () => {
-
+        console.log(session?.user.id)
+        console.log(JSON.stringify(myListing.data, null, 2))
     }
 
     const handleListAnother = () => {
