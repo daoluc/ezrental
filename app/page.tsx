@@ -23,7 +23,7 @@ export default function Home() {
         <BrowseItems />
         <div className="py-4 px-5">
           <h3 className="text-center text-xl sm:text-4xl px-2 py-4 sm:py-8 bg-primary">
-            Ready to make money? <Link href='/my-listings' className="font-bold">Start now &rarr; </Link>
+            Ready to make money? <Link href='/mylistings' className="font-bold">Start now &rarr; </Link>
           </h3>
         </div>
         <Footer />
