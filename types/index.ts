@@ -45,3 +45,8 @@ export type User = {
     emailVerified: Date;
     phone: string;
 };
+
+export enum ItemStatus {
+    LISTED = 'listed',
+    UNLISTED = 'unlisted'
+}

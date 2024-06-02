@@ -10,28 +10,44 @@ import ItemPhotos from './item-photos'
 import { Button } from '@/components/ui/button'
 import { useMyListingStore } from '../my-listing-store'
 import { useSession } from 'next-auth/react'
+import { Form } from 'react-hook-form'
+import { toast } from 'sonner'
+import Loader from '@/components/Loader'
 
 const totalSteps = 5
 const stepIncrement = 100 / totalSteps
 const ListYourItemComponent = () => {
-    const {data:session} = useSession()
+    const { data: session } = useSession()
     const myListing = useMyListingStore()
+    const [submitting, setSubmitting] = React.useState(false)
     const [step, setStep] = React.useState(1)
     const handleNextStepChange = () => {
         if (step === totalSteps) return
         setStep(currentStep => currentStep + 1)
     }
     const handlePrevStepChange = () => {
-        if (step === 1) return        
+        if (step === 1) return
         setStep(currentStep => currentStep - 1)
     }
 
-    const handleFinalSubmit = () => {
-        console.log(session?.user.id)
-        console.log(JSON.stringify(myListing.data, null, 2))
+    const handleFinalSubmit = async () => {
+        const data = new FormData()
+        data.set('data', JSON.stringify({ item: myListing.data }))
+
+        setSubmitting(true)
+        const result = await fetch(`api/host/${session?.user.id}/item/create`, {
+            method: 'POST',
+            body: data
+        })
+        setSubmitting(false)
+
+        if (result.ok) {
+            toast("Item created")
+        }
     }
 
     const handleListAnother = () => {
+        myListing.restart()
         setStep(1)
     }
 
@@ -50,10 +66,14 @@ const ListYourItemComponent = () => {
                     5: <ItemPhotos onPrev={handlePrevStepChange} />,
                 }[step]}
 
-                <div className={step < totalSteps ? 'hidden' : 'flex flex-col mt-4 w-full space-y-2'}>
-                    <Button type='button' onClick={handleFinalSubmit}>Submit</Button>
-                    <Button type='button' variant='outline' onClick={handleListAnother}>List another</Button>
-                </div>
+                {
+                    submitting ?
+                        <Loader /> :
+                        <div className={step < totalSteps ? 'hidden' : 'flex flex-col mt-4 w-full space-y-2'}>
+                            <Button type='button' onClick={handleFinalSubmit}>Submit</Button>
+                            <Button type='button' variant='outline' onClick={handleListAnother}>List another</Button>
+                        </div>
+                }
             </div>
         </>
     )

@@ -1,22 +1,26 @@
-import { Item } from "@/types";
+import { Item, ItemStatus } from "@/types";
 import mongoose, { Schema } from "mongoose";
 
-const ItemSchema = new Schema<Item>({
+const ItemSchema = new Schema<Item>(
+  {
     name: String,
     hostid: {
-        type: mongoose.Types.ObjectId,
-        ref: 'User',
-        default: null,
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      default: null,
     },
     price: {
-        daily: Number,
-        hourly: Number,
+      daily: Number,
+      hourly: Number,
     },
     photos: [String],
     description: String,
-    status: String,
+    status: { type: String, default: ItemStatus.LISTED },
     category: String,
     numberOfBookings: Number,
-}, { timestamps: true })
+  },
+  { timestamps: true }
+);
 
-export const ItemModel = mongoose.models.Item || mongoose.model<Item>('Item', ItemSchema);
+export const ItemModel =
+  mongoose.models.Item || mongoose.model<Item>("Item", ItemSchema);

@@ -3,9 +3,16 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from 
 import { Plus } from 'lucide-react'
 import React from 'react'
 import ListYourItemComponent from './_component/list-your-item-component'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../api/auth/[...nextauth]/route'
+import { ItemModel } from '@/schemas/item'
+import SingleListing from './_component/single-listing'
 
-function MyListingsPage() {
-  const myListings = []
+async function MyListingsPage() {
+  const session = await getServerSession(authOptions)
+
+  const myListings = await ItemModel.find({ hostid: session?.user.id })
+
   return (
     <>
       <h1 className="text-2xl sm:text-4xl py-8 font-bold">
@@ -26,10 +33,11 @@ function MyListingsPage() {
       </Dialog>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 py-8">
-        {myListings.length > 0 ?
-          <div>Listings</div>
-          :
-          <p className="text-xl font-light p-4">No listings</p>
+        {
+          myListings.length > 0 ?
+            <SingleListing listings={myListings} />          
+            :
+            <p className='text-xl font-light p-4'></p>
         }
       </div>
     </>
