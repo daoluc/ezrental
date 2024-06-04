@@ -1,16 +1,19 @@
 'use client'
 
 import { itemcategory } from '@/app/mylistings/_component/item-category'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Item, ItemStatus } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/router'
-import { it } from 'node:test'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { Switch } from "@/components/ui/switch"
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 const FormSchema = z.object({
     status: z.boolean(),
@@ -37,6 +40,7 @@ const FormSchema = z.object({
 type FormInput = z.infer<typeof FormSchema>
 
 const ItemEditForm = ({ item }: { item: Item }) => {
+    const router = useRouter()
     const form = useForm<FormInput>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -51,10 +55,23 @@ const ItemEditForm = ({ item }: { item: Item }) => {
     })
 
     async function onSubmit(formInput: FormInput) {
-        console.log(formInput)
-    }
+        const data = {
+            ...formInput,
+        }
 
-    console.log(form);
+        const result = await fetch(`/api/item/${item._id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(data)
+        })
+
+        if (result.ok) {
+            toast.success('Item updated successfully')
+            router.refresh()
+        } else {
+            console.log(result)
+            toast.error('Failed to update item')
+        }
+    }
 
     return (
         <>
@@ -73,7 +90,7 @@ const ItemEditForm = ({ item }: { item: Item }) => {
                                     <FormControl>
                                         <Switch
                                             checked={field.value}
-                                            onChange={field.onChange}
+                                            onCheckedChange={field.onChange}
                                         />
                                     </FormControl>
                                 </FormItem>
@@ -87,7 +104,7 @@ const ItemEditForm = ({ item }: { item: Item }) => {
                             control={form.control}
                             name='itemname'
                             render={({ field }) => (
-                                <FormItem className='flex items-center justify-between font-bold'>
+                                <FormItem>
                                     <FormLabel className={`${field.value ? 'text-green-500' : 'text-black'} font-bold`}>
                                         Name
                                     </FormLabel>
@@ -97,9 +114,99 @@ const ItemEditForm = ({ item }: { item: Item }) => {
                                             placeholder='e.g. Macbook pro'
                                         />
                                     </FormControl>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
+                    </div>
+
+                    {/* item description */}
+                    <div className="bg-slate-100 p-2 rounded-md">
+                        <FormField
+                            control={form.control}
+                            name='itemdescription'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className={`${field.value ? 'text-green-500' : 'text-black'} font-bold`}>
+                                        Description
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Textarea {...field}
+                                            maxLength={200}
+                                            placeholder='Provide detail description and any rules' />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    {/* item category */}
+                    <div className="bg-slate-100 p-2 rounded-md">
+                        <FormField
+                            control={form.control}
+                            name='itemcategory'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <Select onValueChange={field.onChange}
+                                        defaultValue={item.category}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="select an item category">{field.value}</SelectValue>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {
+                                                itemcategory.map(cat => (
+                                                    <SelectItem key={cat.name} value={cat.name}>{cat.dislay}</SelectItem>
+                                                ))
+                                            }
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    {/* item pricing */}
+                    <div className="bg-slate-100 p-2 rounded-md">
+                    <FormField
+                        control={form.control}
+                        name='hourly'
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Hourly rate</FormLabel>
+                                <FormControl>
+                                    <Input {...field}
+                                    placeholder='e.g. 30'/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name='daily'
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Daily rate</FormLabel>
+                                <FormControl>
+                                    <Input {...field}
+                                    placeholder='e.g. 30'/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    </div>
+
+                    {/* submit */}
+                    <div className="py-4">
+                        <Button disabled={!form.formState.isDirty}
+                        type='submit'
+                        className='w-full'>
+                            Save
+                        </Button>
                     </div>
                 </form>
             </Form>

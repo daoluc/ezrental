@@ -47,6 +47,6 @@ export type User = {
 };
 
 export enum ItemStatus {
-    LISTED = 'listed',
-    UNLISTED = 'unlisted'
+    LISTED = 'Listed',
+    UNLISTED = 'Unlisted'
 }

@@ -27,3 +27,47 @@ export async function DELETE(
     return new NextResponse("Failed to delete item", { status: 500 });
   }
 }
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { itemid: string } }
+) {
+  try {
+    await connectToDB();
+
+    const body = await req.json();
+
+    const {
+      itemname,
+      itemcategory,
+      itemdescription,
+      hourly,
+      daily,
+      photos,
+      status,
+    } = body;
+
+    console.log("Iam here!!!!35673546")
+    console.log(params)
+
+    const item = await ItemModel.findById(params.itemid);
+
+    if (!item) {
+      return new NextResponse("Item not found", { status: 404 });
+    }
+
+    item.name = itemname;
+    item.category = itemcategory;
+    item.description = itemdescription;
+    item.price = { hourly, daily };
+    item.photos = photos;
+    item.status = status ? "Listed" : "Unlisted";
+
+    await item.save();
+
+    return new NextResponse("Item updated successfully", { status: 200 });
+  } catch (error) {
+    console.log(error);
+    return new NextResponse("Failed to update item", { status: 500 });
+  }
+}
