@@ -14,6 +14,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import ImageDropZone from '@/components/ImageDropZone'
+import { Hand } from 'lucide-react'
 
 const FormSchema = z.object({
     status: z.boolean(),
@@ -71,6 +73,18 @@ const ItemEditForm = ({ item }: { item: Item }) => {
             console.log(result)
             toast.error('Failed to update item')
         }
+    }
+
+    const HandleFilesAdded = async (filesToUpload: string[]) => {
+        const newPhotos = [...form.getValues('photos'), ...filesToUpload]
+        form.setValue('photos', newPhotos)
+        await onSubmit(form.getValues())
+    }
+
+    const handleFileDelete = async (photoUrl: string) => {
+        const updatedPhotos = form.getValues('photos').filter((photo: string) => photo !== photoUrl)
+        form.setValue('photos', updatedPhotos)
+        await onSubmit(form.getValues())
     }
 
     return (
@@ -170,41 +184,50 @@ const ItemEditForm = ({ item }: { item: Item }) => {
 
                     {/* item pricing */}
                     <div className="bg-slate-100 p-2 rounded-md">
-                    <FormField
-                        control={form.control}
-                        name='hourly'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Hourly rate</FormLabel>
-                                <FormControl>
-                                    <Input {...field}
-                                    placeholder='e.g. 30'/>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name='daily'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Daily rate</FormLabel>
-                                <FormControl>
-                                    <Input {...field}
-                                    placeholder='e.g. 30'/>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                        <FormField
+                            control={form.control}
+                            name='hourly'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Hourly rate</FormLabel>
+                                    <FormControl>
+                                        <Input {...field}
+                                            placeholder='e.g. 30' />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='daily'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Daily rate</FormLabel>
+                                    <FormControl>
+                                        <Input {...field}
+                                            placeholder='e.g. 30' />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div>
+
+                    {/* photos */}
+                    <div className="flex flex-wrap gap-2">
+                        <ImageDropZone photos={form.getValues('photos')}
+                        onFileDelete={handleFileDelete}
+                        onFilesAdded={HandleFilesAdded}
+                        />
+                    </div>
+
 
                     {/* submit */}
                     <div className="py-4">
                         <Button disabled={!form.formState.isDirty}
-                        type='submit'
-                        className='w-full'>
+                            type='submit'
+                            className='w-full'>
                             Save
                         </Button>
                     </div>
