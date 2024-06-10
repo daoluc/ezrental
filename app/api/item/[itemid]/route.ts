@@ -1,5 +1,8 @@
+import { storageRef } from "@/lib/firebase";
 import { connectToDB } from "@/lib/mongodb";
 import { ItemModel } from "@/schemas/item";
+import { Item } from "@/types";
+import { deleteObject } from "firebase/storage";
 import { NextResponse } from "next/server";
 
 export async function DELETE(
@@ -14,7 +17,13 @@ export async function DELETE(
     let deleteResult = await ItemModel.findByIdAndDelete(itemid);
 
     if (deleteResult) {
-      /* make sure delete the photos  */
+      let item = deleteResult as unknown as Item;
+      if (item.photos) {
+        await Promise.all(item.photos.map(async (photo) => {
+          const ref = storageRef(photo);
+          await deleteObject(ref);
+        }));
+      }
 
       return NextResponse.json({
         message: "Item deleted",
@@ -47,8 +56,8 @@ export async function PATCH(
       status,
     } = body;
 
-    console.log("Iam here!!!!35673546")
-    console.log(params)
+    console.log("Iam here!!!!35673546");
+    console.log(params);
 
     const item = await ItemModel.findById(params.itemid);
 
