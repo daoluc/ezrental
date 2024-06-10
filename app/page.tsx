@@ -18,11 +18,11 @@ export default function Home() {
           <HowItWorks />
         </MaxWContainer>
         <div className="py-4 px-5">
-          <h3 className="text-center text-xl sm:text-4xl px-2 py-4 sm:py-8 bg-primary">Why buy when you can rent! Choose from thousand of items available to rent.</h3>
+          <h3 className="mb-16 mt-16 text-center text-xl sm:text-4xl px-2 py-4 sm:py-16 bg-primary">Why buy when you can rent! Choose from thousand of items available to rent.</h3>
         </div>
         <BrowseItems />
         <div className="py-4 px-5">
-          <h3 className="text-center text-xl sm:text-4xl px-2 py-4 sm:py-8 bg-primary">
+          <h3 className="mb-16 mt-16 text-center text-xl sm:text-4xl px-2 py-4 sm:py-8 bg-primary">
             Ready to make money? <Link href='/mylistings' className="font-bold">Start now &rarr; </Link>
           </h3>
         </div>

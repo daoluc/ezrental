@@ -1,7 +1,7 @@
 'use client'
 
 import { Item, ItemStatus } from '@/types'
-import React, { useState } from 'react'
+import React, { Key, useState } from 'react'
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import Image from 'next/image'
+import { ImageIcon } from 'lucide-react'
 
 const SingleListing = ({ listings }: { listings: Item[] }) => {
 
@@ -47,12 +49,22 @@ const SingleListing = ({ listings }: { listings: Item[] }) => {
         <>
             {
                 listings.map((item) => (
-                    <div key={item._id} className='flex gap-4 py-1 pb-1 shadow-md'>
+                    <div key={item._id as Key} className='flex gap-4 py-1 pb-1 shadow-md'>
 
-                        {/*TODO: photo*/}
+                        {/* photo */}
+                        <div>
+                            {
+                                item.photos.length > 0 ?
+                                <Image className='rounded-md' width={100} height={100}
+                                alt={item.name} src={`${item.photos.at(0)}`} />
+                                : 
+                                <ImageIcon width={100} height={100} className='text-slate-100 w-32 h-32'/>
+                            }
+                        </div>
+
                         <div className="flex flex-col justify-center space-y-1">
                             <p className="text-2xl sm:text-xl font-bold capitalize">{item.name}</p>
-                            <Badge className={`${item.status === ItemStatus.LISTED ? 'bg-green-500' : 'bg-red-500'} text-white uppercase text-center`}>
+                            <Badge className={`${item.status === ItemStatus.LISTED ? 'bg-green-500' : 'bg-red-500'} text-white uppercase flex justify-center w-24`}>
                                 {item.status}
                             </Badge>
 

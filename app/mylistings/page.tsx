@@ -32,7 +32,7 @@ async function MyListingsPage() {
         </DialogContent>
       </Dialog>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 py-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 py-8">
         {
           myListings.length > 0 ?
             <SingleListing listings={myListings} />          
