@@ -31,7 +31,6 @@ const ImageDropZone = (
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        console.log("I am her!!! 9988")
         if (photos?.length) {
             const newImages = photos.map<UploadInterface>(photo => ({
                 file: null,

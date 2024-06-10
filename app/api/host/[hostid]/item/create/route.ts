@@ -35,7 +35,7 @@ export async function POST(
                 hourly: item.price.hourly,
                 daily: item.price.daily
             },
-            Photos: item.photos ?? [],
+            photos: item.photos ?? [],
             category: item.category,
         })
 
