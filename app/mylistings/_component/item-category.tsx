@@ -13,22 +13,8 @@ import {
 } from "@/components/ui/select"
 import { Button } from '@/components/ui/button'
 import { useMyListingStore } from '../my-listing-store'
+import { itemCategories } from '@/data'
 
-
-export const itemcategory = [
-    {
-        dislay: 'Camera gear',
-        name: 'camera-gear'
-    },
-    {
-        dislay: 'Power tools',
-        name: 'power-tools'
-    },
-    {
-        dislay: 'House tools',
-        name: 'house-tools'
-    },
-]
 const FormSchema = z.object({
     itemcategory: z.string().min(1, {
         message: 'Item category is required'
@@ -77,7 +63,7 @@ function ItemCategory({
                                     </SelectTrigger>
                                     <SelectContent>
                                         {
-                                            itemcategory.map(cat => (
+                                            itemCategories.map(cat => (
                                                 <SelectItem key={cat.name} value={cat.name}>{cat.dislay}</SelectItem>
                                             ))
                                         }
