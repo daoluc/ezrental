@@ -1,6 +1,6 @@
 'use client'
 
-import { itemcategory } from '@/app/mylistings/_component/item-category'
+import { itemCategories } from '@/data'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Item, ItemStatus } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -170,7 +170,7 @@ const ItemEditForm = ({ item }: { item: Item }) => {
                                         </SelectTrigger>
                                         <SelectContent>
                                             {
-                                                itemcategory.map(cat => (
+                                                itemCategories.map(cat => (
                                                     <SelectItem key={cat.name} value={cat.name}>{cat.dislay}</SelectItem>
                                                 ))
                                             }
